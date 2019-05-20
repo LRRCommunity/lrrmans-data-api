@@ -1,14 +1,14 @@
 package com.jack_watson.bean
 
 data class ParticipantInfo(
-    val mIsActive: Boolean,
-    val mName: String?,
-    val mWorldPosition: Array<Float>?,
-    val mCurrentLapDistance: Float?,
-    val mRacePosition: Long?,
-    val mLapsCompleted: Long?,
-    val mCurrentLap: Long?,
-    val mCurrentSector: Int
+    val IsActive: Boolean?,
+    val Name: String?,
+    val WorldPosition: Array<Float>?,
+    val CurrentLapDistance: Float?,
+    val RacePosition: Long?,
+    val LapsCompleted: Long?,
+    val CurrentLap: Long?,
+    val CurrentSector: Int?
 ) {
     //Generated equals function
     override fun equals(other: Any?): Boolean {
@@ -17,31 +17,31 @@ data class ParticipantInfo(
 
         other as ParticipantInfo
 
-        if (mIsActive != other.mIsActive) return false
-        if (mName != other.mName) return false
-        if (mWorldPosition != null) {
-            if (other.mWorldPosition == null) return false
-            if (!mWorldPosition.contentEquals(other.mWorldPosition)) return false
-        } else if (other.mWorldPosition != null) return false
-        if (mCurrentLapDistance != other.mCurrentLapDistance) return false
-        if (mRacePosition != other.mRacePosition) return false
-        if (mLapsCompleted != other.mLapsCompleted) return false
-        if (mCurrentLap != other.mCurrentLap) return false
-        if (mCurrentSector != other.mCurrentSector) return false
+        if (IsActive != other.IsActive) return false
+        if (Name != other.Name) return false
+        if (WorldPosition != null) {
+            if (other.WorldPosition == null) return false
+            if (!WorldPosition.contentEquals(other.WorldPosition)) return false
+        } else if (other.WorldPosition != null) return false
+        if (CurrentLapDistance != other.CurrentLapDistance) return false
+        if (RacePosition != other.RacePosition) return false
+        if (LapsCompleted != other.LapsCompleted) return false
+        if (CurrentLap != other.CurrentLap) return false
+        if (CurrentSector != other.CurrentSector) return false
 
         return true
     }
 
     //Generated hashCode function
     override fun hashCode(): Int {
-        var result = mIsActive.hashCode()
-        result = 31 * result + (mName?.hashCode() ?: 0)
-        result = 31 * result + (mWorldPosition?.contentHashCode() ?: 0)
-        result = 31 * result + (mCurrentLapDistance?.hashCode() ?: 0)
-        result = 31 * result + (mRacePosition?.hashCode() ?: 0)
-        result = 31 * result + (mLapsCompleted?.hashCode() ?: 0)
-        result = 31 * result + (mCurrentLap?.hashCode() ?: 0)
-        result = 31 * result + mCurrentSector
+        var result = IsActive.hashCode()
+        result = 31 * result + (Name?.hashCode() ?: 0)
+        result = 31 * result + (WorldPosition?.contentHashCode() ?: 0)
+        result = 31 * result + (CurrentLapDistance?.hashCode() ?: 0)
+        result = 31 * result + (RacePosition?.hashCode() ?: 0)
+        result = 31 * result + (LapsCompleted?.hashCode() ?: 0)
+        result = 31 * result + (CurrentLap?.hashCode() ?: 0)
+        result = 31 * result + (CurrentSector?.hashCode() ?: 0)
         return result
     }
 }

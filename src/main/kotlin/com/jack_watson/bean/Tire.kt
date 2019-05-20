@@ -10,7 +10,7 @@ data class Tire(
 
     val YPosition: Float?,
     val RotationsPerSecond: Float?,
-    val Temperature: Float,
+    val Temperature: Float?,
     val HeightAboveGround: Float?,
 
     val TireWear: Float?,

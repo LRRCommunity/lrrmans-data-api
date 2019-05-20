@@ -4,12 +4,12 @@ import com.jack_watson.enums.*
 
 
 //The contents of this class should match TelemetryData.cs from https://github.com/LRRCommunity/libpcars2
-data class ProjectCars2Data(
+data class TelemetryData(
     val GameState: GameState?,
     val SessionState: SessionState?,
     val RaceState: RaceState?,
 
-    val SequenceNumber: UInt?,
+    val SequenceNumber: Int?,
 
     val ViewedParticipantIndex: Int?,
     val NumParticipants: Int?,
@@ -65,7 +65,7 @@ data class ProjectCars2Data(
     val FuelCapacity: Float?,
     val Speed: Float?,
     val Rpm: Float?,
-    val MaxRPM: Float?,
+    val MaxRpm: Float?,
     val Gear: Int?,
     val NumGears: Int?,
     val Odometer: Float?,
@@ -102,7 +102,7 @@ data class ProjectCars2Data(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ProjectCars2Data
+        other as TelemetryData
 
         if (GameState != other.GameState) return false
         if (SessionState != other.SessionState) return false
@@ -161,7 +161,7 @@ data class ProjectCars2Data(
         if (FuelCapacity != other.FuelCapacity) return false
         if (Speed != other.Speed) return false
         if (Rpm != other.Rpm) return false
-        if (MaxRPM != other.MaxRPM) return false
+        if (MaxRpm != other.MaxRpm) return false
         if (Gear != other.Gear) return false
         if (NumGears != other.NumGears) return false
         if (Odometer != other.Odometer) return false
@@ -271,7 +271,7 @@ data class ProjectCars2Data(
         result = 31 * result + (FuelCapacity?.hashCode() ?: 0)
         result = 31 * result + (Speed?.hashCode() ?: 0)
         result = 31 * result + (Rpm?.hashCode() ?: 0)
-        result = 31 * result + (MaxRPM?.hashCode() ?: 0)
+        result = 31 * result + (MaxRpm?.hashCode() ?: 0)
         result = 31 * result + (Gear ?: 0)
         result = 31 * result + (NumGears ?: 0)
         result = 31 * result + (Odometer?.hashCode() ?: 0)
