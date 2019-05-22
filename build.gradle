@@ -25,6 +25,10 @@ apply plugin: 'application'
 group 'com.jack_watson'
 version '1.0-SNAPSHOT'
 
+processResources {
+    expand(project.properties)
+}
+
 repositories {
     mavenCentral()
     jcenter()
@@ -46,8 +50,10 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
     compile "org.jetbrains.kotlin:kotlin-reflect:1.3.+"
-
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.influxdb:influxdb-java:2.15"
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

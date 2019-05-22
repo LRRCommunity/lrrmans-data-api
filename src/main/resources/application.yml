@@ -1,0 +1,6 @@
+spring:
+  profiles: local
+influxdb:
+  url: http://localhost:8086
+  username: admin
+  database: mydb
