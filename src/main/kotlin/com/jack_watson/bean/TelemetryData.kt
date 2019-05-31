@@ -3,6 +3,7 @@ package com.jack_watson.bean
 import org.influxdb.annotation.Column
 import org.influxdb.annotation.Measurement
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -116,9 +117,9 @@ data class TelemetryData(
     @Column(name = "brakeBias") val BrakeBias: Float?
 
 ) {
-    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.nZZZZZ")
+    private val dateFormat = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
-    private val _timestamp: Long = LocalDate.from(dateFormat.parse(Timestamp)).toEpochDay()
+    private val _timestamp: Long = Instant.from(dateFormat.parse(Timestamp)).toEpochMilli()
     fun getTimestampEpoch() = _timestamp
 
 

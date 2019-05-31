@@ -7,6 +7,7 @@ import com.jack_watson.enums.TirePosition
 import org.influxdb.InfluxDB
 import org.influxdb.InfluxDBFactory
 import org.influxdb.dto.Point
+import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
@@ -21,6 +22,8 @@ class InfluxDao @Autowired constructor(
         var influxDb = connectToInfluxDb()
         influxDb.setDatabase(influxDbConfig.database)
         influxDb.setRetentionPolicy(influxDbConfig.retentionPolicy)
+
+        //System.out.println("${telemetryData.Timestamp} - ${telemetryData.getTimestampEpoch()}" )
 
         insertPoints(influxDb, telemetryData)
 
