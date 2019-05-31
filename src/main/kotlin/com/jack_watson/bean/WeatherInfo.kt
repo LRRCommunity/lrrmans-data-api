@@ -1,15 +1,18 @@
 package com.jack_watson.bean
 
+import org.influxdb.annotation.Column
+
+//Used in race measurement
 data class WeatherInfo (
-    val AmbientTemperature: Float?,
-    val TrackTemperature: Float?,
+    @Column(name = "ambientTemperature") val AmbientTemperature: Float?,
+    @Column(name = "trackTemperature") val TrackTemperature: Float?,
 
-    val RainDensity: Float?,
-    val SnowDensity: Float?,
+    @Column(name = "rainDensity") val RainDensity: Float?,
+    @Column(name = "snowDensity") val SnowDensity: Float?,
 
-    val WindSpeed: Float?,
-    val WindDirectionX: Float?,
-    val WindDirectionY: Float?,
+    @Column(name = "windSpeed") val WindSpeed: Float?,
+    @Column(name = "windDirectionX") val WindDirectionX: Float?,
+    @Column(name = "windDirectionY") val WindDirectionY: Float?,
 
-    val CloudBrightness: Float?
+    @Column(name = "cloudBrightness") val CloudBrightness: Float?
 )

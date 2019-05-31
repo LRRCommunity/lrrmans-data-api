@@ -16,7 +16,7 @@ class ProjectCars2DataController @Autowired constructor(
     private val influxDao: InfluxDao
 ){
 
-    @PostMapping("/")
+    @PostMapping
     fun postProjectCars2Data(@RequestBody(required = true) pc2Data: TelemetryData): ResponseEntity<TelemetryData> {
         influxDao.processTelemetryData(pc2Data)
         return ResponseEntity(pc2Data, HttpStatus.OK)

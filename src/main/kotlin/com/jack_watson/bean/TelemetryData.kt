@@ -1,15 +1,18 @@
 package com.jack_watson.bean
 
-import com.jack_watson.enums.*
 import org.influxdb.annotation.Column
 import org.influxdb.annotation.Measurement
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 //The contents of this class should match TelemetryData.cs from https://github.com/LRRCommunity/libpcars2
-@Measurement(name = "telemetryData", database = "pc2DataTest")
+@Measurement(name = "telemetryData")
 data class TelemetryData(
 
-    val TimeStamp: Long,
+    val Timestamp: String,
 
     @Column(name = "gameState", tag = true) val GameState: String?,
     @Column(name = "sessionState", tag = true) val SessionState: String?,
@@ -19,7 +22,7 @@ data class TelemetryData(
     @Column(name = "numParticipants") val NumParticipants: Int?,
 
     //TODO: Figure out how these get into influxdb
-    val Participant: Array<ParticipantInfo>?,
+    val Participants: Array<ParticipantInfo>?,
     val ParticipantsEx: Array<ParticipantInfoEx>?,
 
     @Column(name = "brake") val Brake: Float?,
@@ -30,7 +33,7 @@ data class TelemetryData(
     @Column(name = "carName", tag = true) val CarName: String?,
     @Column(name = "carClassName", tag = true) val CarClassName: String?,
 
-    //TODO: Figure out how these get into influxdb
+    //Inserted as race
     val EventDetails: EventInfo?,
     val Weather: WeatherInfo?,
 
@@ -45,13 +48,13 @@ data class TelemetryData(
     @Column(name = "currentSector2Time") val CurrentSector2Time: Float?,
     @Column(name = "currentSector3Time") val CurrentSector3Time: Float?,
 
-    val FastestSector1Time: Float?,
-    val FastestSector2Time: Float?,
-    val FastestSector3Time: Float?,
-    val PersonalFastestLapTime: Float?,
-    val PersonalFastestSector1Time: Float?,
-    val PersonalFastestSector2Time: Float?,
-    val PersonalFastestSector3Time: Float?,
+    @Column(name = "fastestSector1Time") val FastestSector1Time: Float?,
+    @Column(name = "fastestSector2Time") val FastestSector2Time: Float?,
+    @Column(name = "fastestSector3Time") val FastestSector3Time: Float?,
+    @Column(name = "personalFastestLapTime") val PersonalFastestLapTime: Float?,
+    @Column(name = "personalFastestSector1Time") val PersonalFastestSector1Time: Float?,
+    @Column(name = "personalFastestSector2Time") val PersonalFastestSector2Time: Float?,
+    @Column(name = "personalFastestSector3Time") val PersonalFastestSector3Time: Float?,
 
     @Column(name = "highestFlagColor") val HighestFlagColour: String?,
     @Column(name = "highestFlagReason") val HighestFlagReason: String?,
@@ -59,7 +62,9 @@ data class TelemetryData(
     @Column(name = "pitMode", tag = true) val PitMode: String?,
     @Column(name = "pitSchedule", tag = true) val PitSchedule: String?,
 
-    @Column(name = "carFlags", tag = true) val CarFlags: String?,
+    //TODO: Split these flags into multiple fields
+    val CarFlags: Byte?,
+
     @Column(name = "oilTemp") val OilTemp: Float?,
     @Column(name = "oilPressure") val OilPressure: Float?,
     @Column(name = "waterTemp") val WaterTemp: Float?,
@@ -82,18 +87,18 @@ data class TelemetryData(
 
     //Need to add these fields manually? The elements in each array correspond to the xyz plane
     // [0] = X, [1] = Y, [3] = Z
-    val Orientation: Array<Float>?,
-    val LocalVelocity: Array<Float>?,
-    val WorldVelocity: Array<Float>?,
-    val AngularVelocity: Array<Float>?,
-    val LocalAcceleration: Array<Float>?,
-    val WorldAcceleration: Array<Float>?,
+    val Orientation: Vector<Float>?,
+    val LocalVelocity: Vector<Float>?,
+    val WorldVelocity: Vector<Float>?,
+    val AngularVelocity: Vector<Float>?,
+    val LocalAcceleration: Vector<Float>?,
+    val WorldAcceleration: Vector<Float>?,
 
     //TODO: Figure out whatever the hell this means
-    val ExtentsCenter: Array<Float>?,
+    val ExtentsCenter: Vector<Float>?,
 
-    //TODO: Revisit this to figure out how to get the fields into influx
-    val Tires: Array<Tire>?,
+    //Each tire is inserted as its own point into the tires measurement
+    val Tires: Array<Tire>,
 
     @Column(name = "crashState") val CrashState: Long?,
     @Column(name = "aeroDamage") val AeroDamage: Float?,
@@ -110,4 +115,11 @@ data class TelemetryData(
     @Column(name = "enforcedPitStopLap") val EnforcedPitStopLap: Int?,
     @Column(name = "brakeBias") val BrakeBias: Float?
 
-)
+) {
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.nZZZZZ")
+
+    private val _timestamp: Long = LocalDate.from(dateFormat.parse(Timestamp)).toEpochDay()
+    fun getTimestampEpoch() = _timestamp
+
+
+}

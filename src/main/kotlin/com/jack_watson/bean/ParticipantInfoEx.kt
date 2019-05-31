@@ -1,31 +1,38 @@
 package com.jack_watson.bean
 
 import com.jack_watson.enums.*
+import org.influxdb.annotation.Column
 
 data class ParticipantInfoEx(
-    val CurrentSector1Time: Float?,
-    val CurrentSector2Time: Float?,
-    val CurrentSector3Time: Float?,
+    @Column(name = "currentSector1Time") val CurrentSector1Time: Float?,
+    @Column(name = "currentSector2Time") val CurrentSector2Time: Float?,
+    @Column(name = "currentSector3Time") val CurrentSector3Time: Float?,
 
-    val FastestSector1Time: Float?,
-    val FastestSector2Time: Float?,
-    val FastestSector3Time: Float?,
+    @Column(name = "FastestSector1Time") val FastestSector1Time: Float?,
+    @Column(name = "FastestSector2Time") val FastestSector2Time: Float?,
+    @Column(name = "FastestSector3Time") val FastestSector3Time: Float?,
 
-    val FastestLapTime: Float?,
-    val LastLapTime: Float?,
-    val InvalidLap: Boolean?,
+    @Column(name = "fastestLapTime") val FastestLapTime: Float?,
+    @Column(name = "lastLapTime") val LastLapTime: Float?,
+    val InvalidLap: Boolean = false,
 
-    val RaceState: RaceState?,
-    val Orientation: Array<Float>?,
-    val Speed: Float?,
+    @Column(name = "raceState", tag = true) val RaceState: String?,
 
-    val PitMode: PitMode?,
-    val PitSchedule: PitSchedule?,
+    //TODO: Figure out how to insert this
+    val Orientation: Vector<Float>?,
 
-    val HighestFlagColor: FlagColor?,
-    val HighestFlagReason: FlagReason?,
+    @Column(name = "speed") val Speed: Float?,
 
-    val CarName: String?,
-    val CarClassName: String?,
+    @Column(name = "pitMode") val PitMode: String?,
+    @Column(name = "pitSchedule") val PitSchedule: String?,
+
+    @Column(name = "highestFlagColor") val HighestFlagColor: String?,
+    @Column(name = "highestFlagReason") val HighestFlagReason: String?,
+
+    @Column(name = "carName", tag = true) val CarName: String?,
+    @Column(name = "carClass", tag = true) val CarClassName: String?,
+
+    //TODO: Figure out what to do with this?
+    // @Column(name = "countryCode", tag = true)
     val CountryCode: Int?
 )

@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Required for Kotlin integration
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version" // See https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
+        classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
     }
 }
@@ -39,6 +40,10 @@ jar {
     version = '0.1.0'
 }
 
+bootJar {
+    launchScript()
+}
+
 dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
@@ -53,6 +58,7 @@ dependencies {
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.influxdb:influxdb-java:2.15"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

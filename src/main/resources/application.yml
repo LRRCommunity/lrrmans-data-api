@@ -3,4 +3,29 @@ spring:
 influxdb:
   url: http://localhost:8086
   username: admin
-  database: mydb
+  database: pc2DataTest
+  retentionPolicy: autogen
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,httptrace,info,loggers,mappings
+---
+
+spring:
+  profiles: test
+influxdb:
+  url: http://localhost:8086
+  username:
+  database: pc2DataTest
+  retentionPolicy: autogen
+
+---
+
+spring:
+  profiles: production
+influxdb:
+  url: http://localhost:8086
+  database: pc2DataProd
+  retentionPolicy: forever
+
