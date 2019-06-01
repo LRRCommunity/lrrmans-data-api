@@ -1,5 +1,6 @@
 package com.jack_watson.controller
 
+import com.jack_watson.bean.Pc2DataResponse
 import com.jack_watson.bean.TelemetryData
 import com.jack_watson.database.InfluxDao
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,8 +18,10 @@ class ProjectCars2DataController @Autowired constructor(
 ){
 
     @PostMapping
-    fun postProjectCars2Data(@RequestBody(required = true) pc2Data: TelemetryData): ResponseEntity<TelemetryData> {
-        influxDao.processTelemetryData(pc2Data)
-        return ResponseEntity(pc2Data, HttpStatus.OK)
+    fun postProjectCars2Data(@RequestBody(required = true) pc2Data: TelemetryData): ResponseEntity<Pc2DataResponse> {
+        return ResponseEntity(
+            influxDao.processTelemetryData(pc2Data),
+            HttpStatus.OK
+        )
     }
 }

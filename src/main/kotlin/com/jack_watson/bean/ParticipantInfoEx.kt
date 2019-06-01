@@ -1,7 +1,8 @@
 package com.jack_watson.bean
 
-import com.jack_watson.enums.*
+import com.jack_watson.database.InfluxUtils
 import org.influxdb.annotation.Column
+import org.influxdb.dto.Point
 
 data class ParticipantInfoEx(
     @Column(name = "currentSector1Time") val CurrentSector1Time: Float?,
@@ -35,4 +36,8 @@ data class ParticipantInfoEx(
     //TODO: Figure out what to do with this?
     // @Column(name = "countryCode", tag = true)
     val CountryCode: Int?
-)
+) {
+    fun addVectorsToPoint(pointBuilder: Point.Builder): Point.Builder =
+        InfluxUtils.addVectorToPoint(pointBuilder, Orientation!!, "worldPosition")
+
+}

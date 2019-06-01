@@ -1,48 +1,41 @@
 package com.jack_watson.database
 
-import com.jack_watson.bean.ParticipantInfo
-import com.jack_watson.bean.TelemetryData
-import com.jack_watson.bean.Tire
+import com.jack_watson.bean.*
 import com.jack_watson.enums.TirePosition
-import org.influxdb.InfluxDB
-import org.influxdb.InfluxDBFactory
 import org.influxdb.dto.Point
-import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
 
 @Service
 class InfluxDao @Autowired constructor(
-    private val influxDbConfig: InfluxDbConfiguration
+    private val influxConnection: InfluxConnection
 ) {
 
-    fun processTelemetryData(telemetryData: TelemetryData) {
+    fun processTelemetryData(telemetryData: TelemetryData): Pc2DataResponse {
         //Setup database connection
-        var influxDb = connectToInfluxDb()
-        influxDb.setDatabase(influxDbConfig.database)
-        influxDb.setRetentionPolicy(influxDbConfig.retentionPolicy)
 
-        //System.out.println("${telemetryData.Timestamp} - ${telemetryData.getTimestampEpoch()}" )
+        insertPoints(telemetryData)
 
-        insertPoints(influxDb, telemetryData)
-
-        influxDb.close()
+        return Pc2DataResponse(telemetryData.Timestamp, telemetryData.SourceUser, true)
     }
 
-    private fun insertPoints(influxDb: InfluxDB, telemetryData: TelemetryData) {
+    private fun insertPoints(telemetryData: TelemetryData) {
         //Insert TelemetryData
-        influxDb.write(
-            Point.measurementByPOJO(TelemetryData::class.java)
-                .time(telemetryData.getTimestampEpoch(), TimeUnit.MILLISECONDS)
-                .addFieldsFromPOJO(telemetryData)
-                .build()
+        influxConnection.write(
+            telemetryData.addVectorsToPoint(
+                Point.measurementByPOJO(TelemetryData::class.java)
+                    .time(telemetryData.getTimestampEpoch(), TimeUnit.MILLISECONDS)
+                    .tag("sourceUser", telemetryData.SourceUser)
+                    .addFieldsFromPOJO(telemetryData)
+            ).build()
         )
 
         //Insert EventInfo and WeatherInfo as "race" measurement
-        influxDb.write(
+        influxConnection.write(
             Point.measurement("race")
                 .time(telemetryData.getTimestampEpoch(), TimeUnit.MILLISECONDS)
+                .tag("sourceUser", telemetryData.SourceUser)
                 .addFieldsFromPOJO(telemetryData.EventDetails)
                 .addFieldsFromPOJO(telemetryData.Weather)
                 .build()
@@ -53,9 +46,10 @@ class InfluxDao @Autowired constructor(
             for (i in 0 until telemetryData.Tires.size) {
                 var tire = telemetryData.Tires[i]
                 tire.PositionOnCar = TirePosition.getTirePositionByIndex(i)
-                influxDb.write(
+                influxConnection.write(
                     Point.measurementByPOJO(Tire::class.java)
                         .time(telemetryData.getTimestampEpoch(), TimeUnit.MILLISECONDS)
+                        .tag("sourceUser", telemetryData.SourceUser)
                         .addFieldsFromPOJO(tire)
                         .tag("positionOnCar", tire.PositionOnCar.toString())
                         .build()
@@ -65,19 +59,33 @@ class InfluxDao @Autowired constructor(
 
         if (telemetryData.Participants != null && telemetryData.ParticipantsEx != null && telemetryData.NumParticipants != null) {
             for (participantIndex in 0 until telemetryData.NumParticipants) {
-                influxDb.write(
-                    Point.measurementByPOJO(ParticipantInfo::class.java)
-                        .time(telemetryData.getTimestampEpoch(), TimeUnit.MILLISECONDS)
-                        .addFieldsFromPOJO(telemetryData.Participants[participantIndex])
-                        .addFieldsFromPOJO(telemetryData.ParticipantsEx[participantIndex])
-                        .tag("invalidLap", telemetryData.ParticipantsEx[participantIndex].InvalidLap.toString())
-                        .build()
+                writeParticipant(
+                    telemetryData,
+                    telemetryData.Participants[participantIndex],
+                    telemetryData.ParticipantsEx[participantIndex]
                 )
             }
         }
     }
 
-    private fun connectToInfluxDb() =
-        InfluxDBFactory.connect(influxDbConfig.url, influxDbConfig.username, influxDbConfig.password)
+    private fun writeParticipant(
+        telemetryData: TelemetryData,
+        participant: ParticipantInfo,
+        participantExtra: ParticipantInfoEx
+    ) {
+        influxConnection.write(
+            participantExtra.addVectorsToPoint(
+                participant.addVectorsToPoint(
+                    Point.measurementByPOJO(ParticipantInfo::class.java)
+                        .time(telemetryData.getTimestampEpoch(), TimeUnit.MILLISECONDS)
+                        .tag("sourceUser", telemetryData.SourceUser)
+                        .addFieldsFromPOJO(participant)
+                        .addFieldsFromPOJO(participantExtra)
+                        .tag("invalidLap", participantExtra.InvalidLap.toString())
+                )
+            ).build()
+        )
+    }
+
 
 }

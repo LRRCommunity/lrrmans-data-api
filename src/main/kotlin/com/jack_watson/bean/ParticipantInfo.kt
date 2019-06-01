@@ -1,7 +1,9 @@
 package com.jack_watson.bean
 
+import com.jack_watson.database.InfluxUtils
 import org.influxdb.annotation.Column
 import org.influxdb.annotation.Measurement
+import org.influxdb.dto.Point
 
 @Measurement(name = "participant")
 data class ParticipantInfo(
@@ -51,4 +53,8 @@ data class ParticipantInfo(
         result = 31 * result + (CurrentSector?.hashCode() ?: 0)
         return result
     }
+
+    fun addVectorsToPoint(pointBuilder : Point.Builder) : Point.Builder =
+         InfluxUtils.addVectorToPoint(pointBuilder, WorldPosition!!, "worldPosition")
+
 }
