@@ -5,6 +5,9 @@ import org.influxdb.dto.Point
 
 class InfluxUtils {
     companion object {
+        private const val UNSET_FLOAT_VALUE: Float = -123.0F
+        private const val SECONDS_TO_MILLISECONDS_MULTIPLIER = 1000
+
         fun <T> addVectorToPoint(pointBuilder: Point.Builder, vector: Vector<T>, name: String): Point.Builder =
             when (vector.X) {
                 is Float -> {
@@ -37,5 +40,12 @@ class InfluxUtils {
                 }
             }
 
+        //Return 0 if number of seconds is set to the "Unset" value, otherwise converts to milliseconds
+        fun convertSecondsToMilliseconds(numberOfSeconds: Float) =
+            if (numberOfSeconds.equals(UNSET_FLOAT_VALUE)) {
+                -1f
+            } else {
+                (numberOfSeconds * SECONDS_TO_MILLISECONDS_MULTIPLIER)
+            }
     }
 }

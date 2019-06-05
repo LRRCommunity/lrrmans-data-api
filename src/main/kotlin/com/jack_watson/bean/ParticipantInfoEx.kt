@@ -38,6 +38,6 @@ data class ParticipantInfoEx(
     val CountryCode: Int?
 ) {
     fun addVectorsToPoint(pointBuilder: Point.Builder): Point.Builder =
-        InfluxUtils.addVectorToPoint(pointBuilder, Orientation!!, "worldPosition")
+        InfluxUtils.addVectorToPoint(pointBuilder, Orientation!!, "orientation")
 
 }

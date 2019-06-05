@@ -7,7 +7,7 @@ import org.influxdb.dto.Point
 
 @Measurement(name = "participant")
 data class ParticipantInfo(
-    val IsActive: Boolean?,
+    @Column(name = "active", tag = true) val IsActive: String?,
     @Column(name = "name", tag = true) val Name: String?,
 
     //TODO: Add this

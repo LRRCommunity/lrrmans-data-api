@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class InfluxDao @Autowired constructor(
-    private val influxConnection: InfluxConnection
+    private val influxConnection: InfluxConnection,
+    private val lapTracker: LapTracker
 ) {
 
     fun processTelemetryData(telemetryData: TelemetryData): Pc2DataResponse {
@@ -66,6 +67,8 @@ class InfluxDao @Autowired constructor(
                 )
             }
         }
+
+        lapTracker.writeLap(influxConnection, telemetryData)
     }
 
     private fun writeParticipant(
