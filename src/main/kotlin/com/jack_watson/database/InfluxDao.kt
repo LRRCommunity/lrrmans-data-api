@@ -1,6 +1,7 @@
 package com.jack_watson.database
 
 import com.jack_watson.bean.*
+import com.jack_watson.bean.lapTracker.LapTracker
 import com.jack_watson.enums.TirePosition
 import org.influxdb.dto.Point
 import org.springframework.beans.factory.annotation.Autowired

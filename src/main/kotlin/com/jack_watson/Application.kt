@@ -1,5 +1,6 @@
 package com.jack_watson
 
+import com.jack_watson.bean.lapTracker.LapTrackerConfiguration
 import com.jack_watson.database.InfluxDbConfiguration
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -7,7 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
-@EnableConfigurationProperties(InfluxDbConfiguration::class)
+@EnableConfigurationProperties(InfluxDbConfiguration::class, LapTrackerConfiguration::class)
 @ComponentScan
 class Application
 

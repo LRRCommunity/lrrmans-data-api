@@ -1,4 +1,4 @@
-package com.jack_watson.bean
+package com.jack_watson.bean.lapTracker
 
 import org.influxdb.annotation.Column
 import org.influxdb.annotation.Measurement

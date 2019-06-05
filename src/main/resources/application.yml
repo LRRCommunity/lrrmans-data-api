@@ -4,7 +4,9 @@ influxdb:
   url: http://localhost:8086
   username: admin
   database: pc2DataTest
-  retentionPolicy: pc2
+  retention-policy: pc2
+lap-tracker:
+  file-name: lap-tracker.json
 management:
   endpoints:
     web:
@@ -18,7 +20,9 @@ influxdb:
   url: http://localhost:8086
   username:
   database: pc2DataTest
-  retentionPolicy: autogen
+  retention-policy: autogen
+lap-tracker:
+  file-name: lap-tracker.json
 
 ---
 
@@ -27,5 +31,7 @@ spring:
 influxdb:
   url: http://localhost:8086
   database: pc2DataProd
-  retentionPolicy: forever
+  retention-policy: forever
+lap-tracker:
+  file-name: lap-tracker.json
 

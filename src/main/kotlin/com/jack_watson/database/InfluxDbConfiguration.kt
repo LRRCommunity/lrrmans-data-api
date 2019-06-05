@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "influxdb")
 class InfluxDbConfiguration {
 
-
     //Kotlin config @Value requires a placeholder, so the value is set at some point
     @Value("\${url:}")
     lateinit var url: String
@@ -20,7 +19,7 @@ class InfluxDbConfiguration {
     @Value("\${database:}")
     lateinit var database: String
 
-    @Value("\${retentionPolicy:}")
+    @Value("\${retention-policy:}")
     lateinit var retentionPolicy: String
 
 }
