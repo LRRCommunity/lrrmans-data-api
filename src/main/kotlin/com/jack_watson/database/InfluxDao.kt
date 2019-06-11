@@ -25,9 +25,12 @@ class InfluxDao @Autowired constructor(
     private fun insertPoints(telemetryData: TelemetryData) {
         //Insert TelemetryData
         influxConnection.write(
-            telemetryData.addVectorsToPoint(
-                Point.measurementByPOJO(TelemetryData::class.java)
-                    .addFieldsFromPOJO(telemetryData)
+            addRequiredFieldsToPointBuilder(
+                telemetryData.addVectorsToPoint(
+                    Point.measurementByPOJO(TelemetryData::class.java)
+                        .addFieldsFromPOJO(telemetryData)
+                ),
+                telemetryData
             ).build()
         )
 
@@ -49,8 +52,7 @@ class InfluxDao @Autowired constructor(
                     Point.measurementByPOJO(Tire::class.java)
                         .addFieldsFromPOJO(tire)
                         .tag("positionOnCar", tire.PositionOnCar.toString()), telemetryData
-                )
-                    .build()
+                ).build()
             )
         }
 
