@@ -1,7 +1,9 @@
 package com.jack_watson.database
 
+import com.jack_watson.bean.TelemetryData
 import com.jack_watson.bean.Vector
 import org.influxdb.dto.Point
+import java.util.concurrent.TimeUnit
 
 class InfluxUtils {
     companion object {
@@ -47,5 +49,10 @@ class InfluxUtils {
             } else {
                 (numberOfSeconds * SECONDS_TO_MILLISECONDS_MULTIPLIER)
             }
+
+        fun addRequiredFieldsToPointBuilder(pointBuilder: Point.Builder, telemetryData: TelemetryData) =
+                pointBuilder.time(telemetryData.getTimestampEpoch(), TimeUnit.MILLISECONDS)
+                    .tag("sourceUser", telemetryData.SourceUser)
+                    .tag("driverName", telemetryData.ReturnData.DriverName)
     }
 }

@@ -4,11 +4,8 @@ import com.jack_watson.database.InfluxUtils
 import org.influxdb.annotation.Column
 import org.influxdb.annotation.Measurement
 import org.influxdb.dto.Point
-import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 
 //The contents of this class should match TelemetryData.cs from https://github.com/LRRCommunity/libpcars2
@@ -17,6 +14,7 @@ data class TelemetryData(
 
     val Timestamp: String,
     val SourceUser: String,
+    val ReturnData: ReturnData,
 
     @Column(name = "gameState", tag = true) val GameState: String,
     @Column(name = "sessionState", tag = true) val SessionState: String,
@@ -125,7 +123,7 @@ data class TelemetryData(
     private val _timestamp: Long = Instant.from(dateFormat.parse(Timestamp)).toEpochMilli()
     fun getTimestampEpoch() = _timestamp
 
-    fun addVectorsToPoint(pointBuilder : Point.Builder) : Point.Builder {
+    fun addVectorsToPoint(pointBuilder: Point.Builder): Point.Builder {
         var newPointBuilder = InfluxUtils.addVectorToPoint(pointBuilder, Orientation!!, "orientation")
         newPointBuilder = InfluxUtils.addVectorToPoint(newPointBuilder, LocalVelocity!!, "localVelocity")
         newPointBuilder = InfluxUtils.addVectorToPoint(newPointBuilder, WorldVelocity!!, "worldVelocity")

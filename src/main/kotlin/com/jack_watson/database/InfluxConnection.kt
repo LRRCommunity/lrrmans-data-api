@@ -17,7 +17,10 @@ class InfluxConnection
 ) {
     private var influxDB = connectToInfluxDb()
 
-    fun write(point: Point) = influxDB.write(point)
+    fun write(point: Point) {
+        System.out.println(point)
+        influxDB.write(point)
+    }
 
     private fun connectToInfluxDb() =
         InfluxDBFactory.connect(influxDbConfig.url, influxDbConfig.username, influxDbConfig.password)
