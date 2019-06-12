@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter
 //The contents of this class should match TelemetryData.cs from https://github.com/LRRCommunity/libpcars2
 @Measurement(name = "telemetryData")
 data class TelemetryData(
-
     val Timestamp: String,
     val SourceUser: String,
     val ReturnData: ReturnData,

@@ -1,11 +1,18 @@
 package com.jack_watson.database
 
-import com.jack_watson.bean.*
+import com.jack_watson.bean.ParticipantInfo
+import com.jack_watson.bean.ParticipantInfoEx
+import com.jack_watson.bean.TelemetryData
+import com.jack_watson.bean.Tire
 import com.jack_watson.bean.lapTracker.LapTracker
+import com.jack_watson.bean.response.DriverDataResponse
+import com.jack_watson.bean.response.Pc2DataResponse
 import com.jack_watson.database.InfluxUtils.Companion.addRequiredFieldsToPointBuilder
 import com.jack_watson.enums.TirePosition
 import org.influxdb.dto.Point
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,6 +27,19 @@ class InfluxDao @Autowired constructor(
         insertPoints(telemetryData)
 
         return Pc2DataResponse(telemetryData.Timestamp, telemetryData.SourceUser, true)
+    }
+
+    fun getDataByDriver(driverName: String): ResponseEntity<DriverDataResponse?> {
+        return ResponseEntity(
+            DriverDataResponse(
+                driverName = driverName,
+                lapsCompleted = 1,
+                personalBestLap = influxConnection.getBestLapByDriver(driverName),
+                personalBestSectorTimes = arrayOf(1.0, 2.0, 3.0),
+                timeDriven = -1.0,
+                topSpeed = influxConnection.getTopSpeedByDriver(driverName)
+            ), HttpStatus.OK
+        )
     }
 
     private fun insertPoints(telemetryData: TelemetryData) {
