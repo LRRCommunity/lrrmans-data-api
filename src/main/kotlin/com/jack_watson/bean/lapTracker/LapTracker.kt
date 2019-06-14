@@ -44,38 +44,56 @@ class LapTracker
             participant.RacePosition as Long,
             telemetryData.PitMode != "0",
             telemetryData.CarName,
-            telemetryData.CarClassName
+            telemetryData.CarClassName,
+            participant.CurrentSector,
+            mutableListOf(
+                telemetryData.CurrentSector1Time,
+                telemetryData.CurrentSector2Time,
+                telemetryData.CurrentSector3Time
+            )
         )
-
-        //If the current session's Lap Number is 0 we don't care about it, just wait until a lap completes
-        if (lap.lapNumber > 0) {
-            writeLap(influxConnection, lap, telemetryData)
-        }
+        writeLap(influxConnection, lap, telemetryData)
     }
 
     //Writes the lap out to Influx & the map if needed
     private fun writeLap(influxConnection: InfluxConnection, lap: Lap, telemetryData: TelemetryData) {
-        var writePoint = false
+        var writePointToDatabase = false
+        var writePointToFile = false
         synchronized(this) {
             if (isNewUser(telemetryData.SourceUser)) {
                 lapsByUser[telemetryData.SourceUser] = lap
-                writePoint = true
+                writePointToDatabase = true
+                writePointToFile = true
             } else if (isNewLap(telemetryData.SourceUser, lap.lapNumber as Number)) {
                 lap.overallLapNumber = lapsByUser[telemetryData.SourceUser]!!.overallLapNumber + 1
+                lap.sectorTimes[0] = lapsByUser[telemetryData.SourceUser]!!.sectorTimes[0]
                 lapsByUser[telemetryData.SourceUser] = lap
-                writePoint = true
+                writePointToDatabase = true
+                writePointToFile = true
+            } else if (isNewSector(telemetryData.SourceUser, lap.currentSector)
+                && savedCurrentSectorIsOne(telemetryData.SourceUser)
+            ) {
+                //If currentSector changes from 1 to 2, we need to save the sector 1 data
+                //If we don't save it, we will lose the sector data on a new lap
+                lapsByUser[telemetryData.SourceUser]!!.sectorTimes[0] = lap.sectorTimes[0]
+                writePointToFile = true
             }
         }
 
-        if (writePoint) {
+        //If the current session's Lap Number is 0 we don't care about it, just wait until a lap completes
+        if (lap.lapNumber > 0 && writePointToDatabase) {
             influxConnection.write(
                 addRequiredFieldsToPointBuilder(
-                    Point.measurementByPOJO(Lap::class.java)
-                        .addFieldsFromPOJO(lap),
+                    lap.addSectorTimesToPointBuilder(
+                        Point.measurementByPOJO(Lap::class.java)
+                            .addFieldsFromPOJO(lap)
+                    ),
                     telemetryData
                 ).build()
             )
+        }
 
+        if (lap.lapNumber > 0 && writePointToFile) {
             synchronized(this) {
                 mapper.writeValue(File(lapTrackerConfig.fileName), lapsByUser)
             }
@@ -88,5 +106,10 @@ class LapTracker
     private fun isNewUser(sourceUser: String) =
         !lapsByUser.contains(sourceUser)
 
+    private fun isNewSector(sourceUser: String, currentSector: Int) =
+        lapsByUser[sourceUser]?.currentSector != currentSector
+
+    private fun savedCurrentSectorIsOne(sourceUser: String) =
+        lapsByUser[sourceUser]?.currentSector == 0
 }
 

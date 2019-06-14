@@ -119,8 +119,9 @@ data class TelemetryData(
 ) {
     private val dateFormat = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
-    private val _timestamp: Long = Instant.from(dateFormat.parse(Timestamp)).toEpochMilli()
-    fun getTimestampEpoch() = _timestamp
+    private val _timestamp = Instant.from(dateFormat.parse(Timestamp))
+    fun getTimestampEpoch() = _timestamp.toEpochMilli()
+    fun getTimestampAsInstant() : Instant = _timestamp
 
     fun addVectorsToPoint(pointBuilder: Point.Builder): Point.Builder {
         var newPointBuilder = InfluxUtils.addVectorToPoint(pointBuilder, Orientation!!, "orientation")

@@ -17,7 +17,7 @@ data class ParticipantInfo(
     @Column(name = "racePosition") val RacePosition: Long?,
     @Column(name = "lapsCompleted") val LapsCompleted: Long?,
     @Column(name = "currentLap") val CurrentLap: Long?,
-    @Column(name = "currentSector") val CurrentSector: Int?
+    @Column(name = "currentSector") val CurrentSector: Int
 ) {
     //Generated equals function
     override fun equals(other: Any?): Boolean {
